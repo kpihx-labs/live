@@ -1,0 +1,52 @@
+[project]
+name = "live-brain"
+version = "0.1.0"
+description = "live brain — FastAPI orchestrator, conductor, and WebSocket session API"
+readme = "README.md"
+authors = [{ name = "KpihX", email = "kapoivha@gmail.com" }]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "httpx>=0.28.0",
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.7.0",
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0.0",
+    "redis>=5.2.0",
+    "uvicorn[standard]>=0.34.0",
+    "websockets>=14.0",
+]
+
+[project.scripts]
+live-brain = "live_brain.main:run"
+
+[build-system]
+requires = ["uv_build>=0.10.3,<0.11.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "live_brain"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.25.0",
+    "ruff>=0.9.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.live.contract]
+schema_version = "live.contract.v1"
+contract_version = "1.0.0"

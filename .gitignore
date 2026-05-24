@@ -1,0 +1,39 @@
+# Agents (never commit)
+.agents/
+
+# Secrets
+.env
+**/.env
+!.env.example
+
+# Python
+.venv/
+**/.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+dist/
+*.egg-info/
+
+# Bun / Node
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+dist-types/
+*.tsbuildinfo
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Docker local
+deploy/docker-compose.override.yml
+deploy/.env
+
+# Scratch
+scratch/
+*.log

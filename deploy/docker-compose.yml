@@ -1,0 +1,78 @@
+# Production — deployed on homelab via GitLab CI (deploy/).
+# Secrets: CI generates .env from masked variables before compose up.
+
+name: live
+
+services:
+  live-brain:
+    build:
+      context: ../brain
+      dockerfile: Dockerfile
+    container_name: live-brain
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    networks:
+      - proxy
+      - live_internal
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  live-web:
+    build:
+      context: ../web
+      dockerfile: Dockerfile
+    container_name: live-web
+    restart: unless-stopped
+    depends_on:
+      live-brain:
+        condition: service_healthy
+    networks:
+      - proxy
+      - live_internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.live.rule=Host(`live.kpihx-labs.com`)"
+      - "traefik.http.routers.live.entrypoints=websecure"
+      - "traefik.http.routers.live.tls=true"
+      - "traefik.http.routers.live.tls.certresolver=myresolver"
+      - "traefik.http.routers.live.middlewares=live-headers"
+      - "traefik.http.services.live.loadbalancer.server.port=80"
+      - "traefik.http.middlewares.live-headers.headers.browserxssfilter=true"
+      - "traefik.http.middlewares.live-headers.headers.contenttypenosniff=true"
+      - "traefik.http.middlewares.live-headers.headers.framedeny=true"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  live-redis:
+    image: redis:7-alpine
+    container_name: live-redis
+    restart: unless-stopped
+    networks:
+      - live_internal
+    volumes:
+      - live_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+networks:
+  proxy:
+    external: true
+  live_internal:
+    name: live_internal
+
+volumes:
+  live_redis_data:
+    name: deploy_live_redis_data

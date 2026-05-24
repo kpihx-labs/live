@@ -1,0 +1,63 @@
+# live — homelab deploy (kpihx-labs/live)
+# Group vars (kpihx-labs): POSTGRES_PASSWORD, TELEGRAM_*, GITHUB_TOKEN (not used for sync)
+
+stages:
+  - validate
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+
+validate_project:
+  stage: validate
+  image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+  variables:
+    GIT_CLEAN_FLAGS: none
+  script:
+    - cd brain && uv sync --group dev
+    - cd brain && uv run pytest -q
+    - |
+      if command -v bun >/dev/null 2>&1; then
+        cd web && bun install --frozen-lockfile && bun run typecheck
+      else
+        docker run --rm -v "$CI_PROJECT_DIR/web:/app" -w /app oven/bun:1-slim \
+          sh -c 'bun install --frozen-lockfile && bun run typecheck'
+      fi
+
+deploy_homelab:
+  stage: deploy
+  tags:
+    - homelab
+  variables:
+    GIT_CLEAN_FLAGS: none
+  only:
+    - main
+  needs:
+    - validate_project
+  script:
+    - echo "Deploying live to homelab..."
+    - cd deploy
+    - echo "MISTRAL_API_KEY=$MISTRAL_API_KEY" > .env
+    - echo "REDIS_URL=redis://live-redis:6379/0" >> .env
+    - echo "HTTP_HOST=0.0.0.0" >> .env
+    - echo "HTTP_PORT=8000" >> .env
+    - echo "PUBLIC_BASE_URL=https://live.kpihx-labs.com" >> .env
+    - docker compose -p live config -q
+    - docker compose -p live up -d --build --remove-orphans
+    - |
+      for attempt in $(seq 1 20); do
+        status="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}starting{{end}}' live-brain 2>/dev/null || true)"
+        if [ "$status" = "healthy" ]; then
+          break
+        fi
+        if [ "$status" = "unhealthy" ]; then
+          docker logs --tail 200 live-brain
+          exit 1
+        fi
+        sleep 3
+      done
+    - docker inspect --format '{{.State.Health.Status}}' live-brain | grep -qx healthy
+    - docker exec live-brain curl -fsS http://127.0.0.1:8000/health
+    - docker image prune -f
+  after_script:
+    - docker run --rm -v "$PWD:/work" alpine chown -R $(id -u):$(id -g) /work 2>/dev/null || true

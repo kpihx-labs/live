@@ -1,0 +1,17 @@
+.git
+.agents
+.env
+**/.env
+.venv
+**/.venv
+node_modules
+**/node_modules
+__pycache__
+.pytest_cache
+.ruff_cache
+dist
+**/dist
+*.md
+!README.md
+deploy
+scratch

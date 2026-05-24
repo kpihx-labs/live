@@ -1,0 +1,16 @@
+# Non-secret defaults — override via env or LIVE_BRAIN_* settings
+
+http:
+  host: "0.0.0.0"
+  port: 8000
+
+mistral:
+  base_url: "https://api.mistral.ai/v1"
+  model: "mistral-small-latest"
+  timeout_s: 60
+
+redis:
+  url: "redis://redis:6379/0"
+
+session:
+  ping_interval_s: 30

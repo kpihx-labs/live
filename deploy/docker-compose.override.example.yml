@@ -1,0 +1,22 @@
+# Local dev — copy to docker-compose.override.yml (gitignored values in .env)
+
+services:
+  live-brain:
+    ports:
+      - "8000:8000"
+    environment:
+      REDIS_URL: redis://live-redis:6379/0
+      HTTP_HOST: "0.0.0.0"
+      HTTP_PORT: "8000"
+
+  live-web:
+    ports:
+      - "8080:80"
+
+  live-redis:
+    ports:
+      - "6379:6379"
+
+networks:
+  proxy:
+    external: false
