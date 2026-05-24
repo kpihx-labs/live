@@ -20,6 +20,7 @@ A single full-screen web experience: you **speak**, the system **shows** (live v
 | [docs/VISION.md](docs/VISION.md) | Product contract |
 | [docs/PRESENCE.md](docs/PRESENCE.md) | Face + ambient layer |
 | [docs/SCENE_IR.md](docs/SCENE_IR.md) | Visual state IR + motor |
+| [docs/LICENSING.md](docs/LICENSING.md) | License strategy (proprietary vs OSS) |
 | [CHANGELOG.md](CHANGELOG.md) | Releases |
 | [TODO.md](TODO.md) | Active backlog |
 
@@ -56,4 +57,4 @@ make deploy        # docker compose in deploy/ (local smoke)
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+**Proprietary — All Rights Reserved.** See [LICENSE](LICENSE) and [docs/LICENSING.md](docs/LICENSING.md).

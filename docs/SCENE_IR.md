@@ -1,7 +1,7 @@
 # Scene IR — Specification & Live Motor Model
 
-> **Scope:** `𝛱/live/` implementation only.  
-> **Companion:** `../STATE_OF_THE_ART.md` · `VISION.md`  
+> **Scope:** `live` product repo (`Homelab/live/`).  
+> **Companion:** `VISION.md` · parent research `$HOME/KpihX-Labs/𝛱/STATE_OF_THE_ART.md`  
 > **Purpose:** Scene IR + live motor — fluid visuals without batch video or slide chains.
 
 ---

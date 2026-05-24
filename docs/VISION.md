@@ -148,11 +148,11 @@ Nothing is a fixed theme; the field is **generated**, not a skin pack.
 
 ## Relation to parent 𝛱
 
-| Parent (`𝛱/`) | `live/` |
-|----------------|---------|
-| Manifest, capital, business vectors | Product + code |
-| `ScienCurious/` content repo | One consumer of exports |
-| `STATE_OF_THE_ART.md` | Research baseline |
+| Parent (`$HOME/KpihX-Labs/𝛱/`) | This repo (`Homelab/live/`) |
+|--------------------------------|-----------------------------|
+| Manifest, capital, business vectors | Product + code only |
+| `ScienCurious/` content | Optional export consumer |
+| `STATE_OF_THE_ART.md` | Research baseline (read-only reference) |
 
 ---
 
