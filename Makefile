@@ -44,7 +44,7 @@ log: ## Follow deploy logs
 
 push: ## Push current branch to all remotes (github + gitlab)
 	@branch="$$(git branch --show-current)"; \
-	git remote | xargs -I{} sh -c 'echo "==> pushing '"$$branch"' to {}"; git push {} '"$$branch"'"
+	git remote | xargs -I{} env BRANCH="$$branch" sh -c 'echo "==> pushing $$BRANCH to {}"; git push {} "$$BRANCH"'
 
 push-tags: ## Push tags to all remotes
 	@git remote | xargs -I{} git push {} --tags
